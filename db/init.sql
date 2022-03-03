@@ -1,0 +1,4 @@
+USE mysql;
+CREATE USER 'root'@'%' IDENTIFIED BY 'ytrewq';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+FLUSH PRIVILEGES;
