@@ -36,6 +36,7 @@ fn main() {
     rocket::ignite()
         .manage(db::connect())
         .mount("/user", controllers::user::routes())
+        .mount("/car", controllers::car::routes())
         .register(utils::catcher::catchers())
         .launch();
 }

@@ -4,25 +4,6 @@ use crate::utils::response::*;
 use rocket_contrib::json::{Json, JsonError};
 use crate::jwt::UserToken;
 use crate::utils::error::Error;
-// use crate::jwt::UserToken;
-
-// #[get("/")]
-// fn read(conn: db::Connection) -> Result<ApiResponse, ApiError> {
-//     let result = User::read(&conn);
-//     match result {
-//         Ok(r) => Ok(success(json!(r))),
-//         Err(e) => Err(db_error(e)),
-//     }
-// }
-//
-// #[get("/<id>")]
-// fn read_by_id(id: i32, conn: db::Connection) -> Result<ApiResponse, ApiError> {
-//     let result = User::read_by_id(id, &conn);
-//     match result {
-//         Ok(r) => Ok(success(json!(r))),
-//         Err(e) => Err(db_error(e)),
-//     }
-// }
 
 #[post("/register", data = "<user>")]
 fn register(

@@ -1,5 +1,4 @@
 use diesel::result::Error as DieselError;
-// use jsonwebtoken::errors::{Error as JWTError, ErrorKind};
 use rocket::http::Status;
 use rocket::response::Responder;
 use rocket_contrib::json::{Json, JsonError, JsonValue};
@@ -68,12 +67,6 @@ pub fn db_error(e: DieselError) -> ApiError {
 }
 
 pub fn unauthorized_error(e: Error) -> ApiError {
-    // let temp = match *e.kind() {
-    //     ErrorKind::InvalidToken => format!("Authorization token is invalid!"),
-    //     ErrorKind::ExpiredSignature => format!("Authorization token is expired"),
-    //     _ => format!("Authorization token error"),
-    // };
-
     let status = Status::Unauthorized;
     fail(status.code, status.reason.to_string(), e.to_string())
 }

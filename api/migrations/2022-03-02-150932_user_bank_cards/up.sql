@@ -6,16 +6,14 @@ CREATE TABLE IF NOT EXISTS user_bank_cards
     `bank_card_id` INT(11),
     `name_on_card` INT(11),
     `expiration`   DATE,
-    `created_at`   DATETIME,
-    `updated_at`   DATETIME,
+    `created_at`   DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    INDEX (bank_card_id),
-
-    FOREIGN KEY (user_id)
+    FOREIGN KEY (`user_id`)
         REFERENCES users (id)
         ON UPDATE CASCADE ON DELETE RESTRICT,
 
-    FOREIGN KEY (bank_card_id)
+    FOREIGN KEY (`bank_card_id`)
         REFERENCES bank_cards (id)
         ON UPDATE CASCADE ON DELETE RESTRICT
-)
+);

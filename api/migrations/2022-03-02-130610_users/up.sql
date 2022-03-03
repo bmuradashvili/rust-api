@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS users
     `last_name`    VARCHAR(60),
     `phone_number` VARCHAR(60),
     `birth_date`   DATE,
-    `created_at`   DATETIME,
-    `updated_at`   DATETIME,
+    `created_at`   DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    UNIQUE KEY unique_email (email)
-)
+    UNIQUE KEY unique_email (`email`)
+);

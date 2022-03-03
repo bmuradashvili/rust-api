@@ -5,20 +5,20 @@ CREATE TABLE IF NOT EXISTS bank_cards
     `bank_id`       INT(11),
     `card_type_id`  INT(11),
     `card_brand_id` INT(11),
-    `created_at`    DATETIME,
-    `updated_at`    DATETIME,
+    `created_at`    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    INDEX (bank_id, card_type_id, card_brand_id),
+    UNIQUE KEY unique_name (`bank_id`, `card_type_id`, `card_brand_id`),
 
-    FOREIGN KEY (bank_id)
-        REFERENCES banks (id)
+    FOREIGN KEY (`bank_id`)
+        REFERENCES banks (`id`)
         ON UPDATE CASCADE ON DELETE RESTRICT,
 
-    FOREIGN KEY (card_type_id)
-        REFERENCES bank_card_types (id)
+    FOREIGN KEY (`card_type_id`)
+        REFERENCES bank_card_types (`id`)
         ON UPDATE CASCADE ON DELETE RESTRICT,
 
-    FOREIGN KEY (card_brand_id)
-        REFERENCES bank_card_brands (id)
+    FOREIGN KEY (`card_brand_id`)
+        REFERENCES bank_card_brands (`id`)
         ON UPDATE CASCADE ON DELETE RESTRICT
-)
+);

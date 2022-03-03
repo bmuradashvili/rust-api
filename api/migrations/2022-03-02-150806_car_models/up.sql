@@ -7,16 +7,20 @@ CREATE TABLE IF NOT EXISTS car_models
     `model_name`           VARCHAR(60),
     `engine_cylinders`     INT(4),
     `engine_displacement`  DECIMAL(6, 2),
-    `created_at`           DATETIME,
-    `updated_at`           DATETIME,
+    `created_at`           DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`           DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    INDEX (brand_id, transmission_type_id),
+    UNIQUE KEY unique_model (`brand_id`,
+                             `transmission_type_id`,
+                             `model_name`,
+                             `engine_cylinders`,
+                             `engine_displacement`),
 
-    FOREIGN KEY (brand_id)
+    FOREIGN KEY (`brand_id`)
         REFERENCES car_brands (id)
         ON UPDATE CASCADE ON DELETE RESTRICT,
 
-    FOREIGN KEY (transmission_type_id)
+    FOREIGN KEY (`transmission_type_id`)
         REFERENCES car_transmission_types (id)
         ON UPDATE CASCADE ON DELETE RESTRICT
-)
+);
