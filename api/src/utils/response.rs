@@ -1,8 +1,9 @@
 use diesel::result::Error as DieselError;
-use jsonwebtoken::errors::{Error as JWTError, ErrorKind};
+// use jsonwebtoken::errors::{Error as JWTError, ErrorKind};
 use rocket::http::Status;
 use rocket::response::Responder;
 use rocket_contrib::json::{Json, JsonError, JsonValue};
+use crate::utils::error::Error;
 
 #[derive(Serialize, Debug)]
 pub struct ResponseError {
@@ -66,13 +67,13 @@ pub fn db_error(e: DieselError) -> ApiError {
     fail(status.code, status.reason.to_string(), e.to_string())
 }
 
-pub fn unauthorized_error(e: JWTError) -> ApiError {
-    let temp = match *e.kind() {
-        ErrorKind::InvalidToken => format!("Authorization token is invalid!"),
-        ErrorKind::ExpiredSignature => format!("Authorization token is expired"),
-        _ => format!("Authorization token error"),
-    };
+pub fn unauthorized_error(e: Error) -> ApiError {
+    // let temp = match *e.kind() {
+    //     ErrorKind::InvalidToken => format!("Authorization token is invalid!"),
+    //     ErrorKind::ExpiredSignature => format!("Authorization token is expired"),
+    //     _ => format!("Authorization token error"),
+    // };
 
     let status = Status::Unauthorized;
-    fail(status.code, status.reason.to_string(), temp)
+    fail(status.code, status.reason.to_string(), e.to_string())
 }

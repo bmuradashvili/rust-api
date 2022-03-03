@@ -4,9 +4,7 @@ use rocket::response::Responder;
 use std::convert::From;
 use std::error::Error as StdError;
 use std::fmt;
-use jsonwebtoken::errors::Error as JWTError;
-use jsonwebtoken::errors::ErrorKind;
-use rocket::response::status::Unauthorized;
+use jsonwebtoken::errors::{Error as JWTError, ErrorKind};
 
 #[derive(Debug)]
 pub enum Error {

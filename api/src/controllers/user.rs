@@ -1,10 +1,9 @@
-use rocket::Response;
-use rocket::response::status;
 use crate::db;
 use crate::models::user::User;
 use crate::utils::response::*;
-use crate::*;
 use rocket_contrib::json::{Json, JsonError};
+use crate::jwt::UserToken;
+use crate::utils::error::Error;
 // use crate::jwt::UserToken;
 
 // #[get("/")]
@@ -46,30 +45,38 @@ fn register(
     }
 }
 
-// #[post("/login", data = "<user>")]
-// fn login(
-//     user: Result<Json<User>, JsonError>,
-//     conn: db::Connection,
-// ) -> Result<ApiResponse, ApiError> {
-//     match user {
-//         Ok(u) => {
-//             let result = User::login(u.into_inner(), &conn);
-//             match result {
-//                 Ok(r) => Ok(success(json!(r))),
-//                 Err(e) => Err(db_error(e)),
-//             }
-//         }
-//         Err(e) => Err(json_error(e)),
-//     }
-// }
+#[post("/login", data = "<user>")]
+fn login(
+    user: Result<Json<User>, JsonError>,
+    conn: db::Connection,
+) -> Result<ApiResponse, ApiError> {
+    match user {
+        Ok(u) => {
+            let result = User::login(u.into_inner(), &conn);
+            match result {
+                Ok(r) => Ok(success(json!(r))),
+                Err(e) => Err(db_error(e)),
+            }
+        }
+        Err(e) => Err(json_error(e)),
+    }
+}
 
-// #[get("/info")]
-// fn get_details(id: i32, token: Result<UserToken, status::Custom<Json<Response>>>, conn: db::Connection) -> Result<ApiResponse, ApiError> {
-//     let result = User::delete(id, &conn);
-//     success(json!(result))
-// }
+#[get("/info")]
+fn get_details(claims: Result<UserToken, Error>, conn: db::Connection) -> Result<ApiResponse, ApiError> {
+    match claims {
+        Ok(u) => {
+            let result = User::read_by_id(u.user_id, &conn);
+            match result {
+                Ok(r) => Ok(success(json!(r))),
+                Err(e) => Err(db_error(e)),
+            }
+        }
+        Err(e) => Err(unauthorized_error(e)),
+    }
+}
 
 // -- routes
 pub fn routes() -> Vec<rocket::Route> {
-    routes![register]
+    routes![register, login, get_details]
 }

@@ -1,18 +1,15 @@
 use crate::schema::users;
 use bcrypt::{hash, verify, DEFAULT_COST};
-use bigdecimal::BigDecimal;
 use chrono::{NaiveDate, NaiveDateTime, Utc};
 use diesel;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
-// use crate::jwt;
-// use crate::jwt::UserToken;
-use crate::schema::users::{email, password};
-use crate::utils::response::{db_error, unauthorized_error};
+use crate::jwt;
+use crate::jwt::AuthorizationToken;
 
-#[table_name = "users"]
 #[derive(Serialize, AsChangeset, Deserialize, Queryable, Insertable)]
+#[table_name = "users"]
 pub struct User {
     pub id: Option<i32>,
     pub email: Option<String>,
@@ -28,7 +25,7 @@ pub struct User {
 impl User {
     pub fn create(user: User, conn: &MysqlConnection) -> Result<User, Error> {
         let password_hashed = hash(&user.password.unwrap(), DEFAULT_COST).unwrap();
-println!("{}", user.birth_date.unwrap().to_string());
+
         let new_user = User {
             created_at: Some(Utc::now().naive_utc()),
             updated_at: Some(Utc::now().naive_utc()),
@@ -42,7 +39,9 @@ println!("{}", user.birth_date.unwrap().to_string());
             .execute(conn);
 
         match ops {
-            Ok(_) => users::table.order(users::id.desc()).first(conn),
+            Ok(_) => users::table
+                .order(users::id.desc())
+                .first(conn),
             Err(e) => Err(e),
         }
     }
@@ -51,27 +50,19 @@ println!("{}", user.birth_date.unwrap().to_string());
         users::table.find(id).first(conn)
     }
 
-    // pub fn login(user: User, conn: &MysqlConnection) -> Result<String, Error> {
-    //     let user_to_verify = users::table
-    //         .filter(users::email.eq(&user.email))
-    //         .first(conn)
-    //         .unwrap();
-    //
-    //     if !user_to_verify.password.is_empty()
-    //         && verify(&user.password, &user_to_verify.password).unwrap() {
-    //         match jwt::generate_token(user_to_verify.id) {
-    //             Some(t) => Ok(t),
-    //             _ => Ok("fail".to_string())
-    //         }
-    //     }
-    //
-    //     match jwt::generate_token(user_to_verify.id) {
-    //         Some(t) => Ok(t),
-    //         _ => Ok("fail".to_string())
-    //     }
-    // }
+    pub fn login(user: User, conn: &MysqlConnection) -> Result<AuthorizationToken, Error> {
+        let user_to_verify = match users::table
+            .filter(users::email.eq(&user.email))
+            .first::<User>(conn) {
+            Ok(u) => u,
+            Err(e) => return Err(e)
+        };
 
-    pub fn delete(id: i32, conn: &MysqlConnection) -> bool {
-        diesel::delete(users::table.find(id)).execute(conn).is_ok()
+        if !user_to_verify.password.as_ref().unwrap().is_empty()
+            && verify(&user.password.unwrap(), &user_to_verify.password.unwrap()).unwrap() {
+            return Ok(jwt::generate_token(user_to_verify.id.unwrap()));
+        }
+
+        return Err(Error::NotFound);
     }
 }

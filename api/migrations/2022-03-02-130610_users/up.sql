@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS users
     `created_at`   DATETIME,
     `updated_at`   DATETIME,
 
-    INDEX (email)
+    UNIQUE KEY unique_email (email)
 )
