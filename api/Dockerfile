@@ -12,9 +12,11 @@ RUN apt update \
 RUN rustup default nightly \
     && cargo install diesel_cli --no-default-features --features "mysql"
 
-#RUN diesel setup
-#RUN diesel migration run
-
 RUN cargo install cargo-watch
+
+RUN diesel setup
+RUN diesel migration run
+
+COPY src/schema.rs /home/app/src/schema.rs
 
 CMD ["cargo", "watch", "-x", "run"]

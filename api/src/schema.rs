@@ -67,7 +67,7 @@ table! {
         id -> Nullable<Integer>,
         user_id -> Nullable<Integer>,
         bank_card_id -> Nullable<Integer>,
-        name_on_card -> Nullable<Integer>,
+        name_on_card -> Nullable<Varchar>,
         expiration -> Nullable<Date>,
         created_at -> Nullable<Datetime>,
         updated_at -> Nullable<Datetime>,
@@ -94,6 +94,35 @@ table! {
         last_name -> Nullable<Varchar>,
         phone_number -> Nullable<Varchar>,
         birth_date -> Nullable<Date>,
+        created_at -> Nullable<Datetime>,
+        updated_at -> Nullable<Datetime>,
+    }
+}
+
+table! {
+    car_info (id) {
+        id -> Nullable<Integer>,
+        user_id -> Nullable<Integer>,
+        brand -> Nullable<Varchar>,
+        model -> Nullable<Varchar>,
+        transmission_type -> Nullable<Varchar>,
+        engine_cylinders -> Nullable<Integer>,
+        engine_displacement -> Nullable<Decimal>,
+        year -> Nullable<Integer>,
+        created_at -> Nullable<Datetime>,
+        updated_at -> Nullable<Datetime>,
+    }
+}
+
+table! {
+    bank_card_info (id) {
+        id -> Nullable<Integer>,
+        user_id -> Nullable<Integer>,
+        bank -> Nullable<Varchar>,
+        card_type -> Nullable<Varchar>,
+        card_company -> Nullable<Varchar>,
+        name_on_card -> Nullable<Varchar>,
+        expiration -> Nullable<Date>,
         created_at -> Nullable<Datetime>,
         updated_at -> Nullable<Datetime>,
     }

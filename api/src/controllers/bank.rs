@@ -1,15 +1,15 @@
 use crate::db;
-use crate::models::car::{CarBrand, CarModel, CarTransmissionType};
+use crate::models::bank::{Bank, BankCard, BankCardCompany, BankCardType};
 use crate::utils::response::*;
 use rocket_contrib::json::{Json, JsonError};
 use crate::jwt::UserToken;
 use crate::utils::error::Error;
 
-#[get("/brands")]
-fn read_brands(claims: Result<UserToken, Error>, conn: db::Connection) -> Result<ApiResponse, ApiError> {
+#[get("/companies")]
+fn read_bank_companies(claims: Result<UserToken, Error>, conn: db::Connection) -> Result<ApiResponse, ApiError> {
     match claims {
         Ok(_) => {
-            let result = CarBrand::read(&conn);
+            let result = Bank::read(&conn);
             match result {
                 Ok(r) => Ok(success(json!(r))),
                 Err(e) => Err(db_error(e)),
@@ -19,11 +19,11 @@ fn read_brands(claims: Result<UserToken, Error>, conn: db::Connection) -> Result
     }
 }
 
-#[get("/transmission-types")]
-fn read_transmission_types(claims: Result<UserToken, Error>, conn: db::Connection) -> Result<ApiResponse, ApiError> {
+#[get("/card/types")]
+fn read_card_types(claims: Result<UserToken, Error>, conn: db::Connection) -> Result<ApiResponse, ApiError> {
     match claims {
         Ok(_) => {
-            let result = CarTransmissionType::read(&conn);
+            let result = BankCardType::read(&conn);
             match result {
                 Ok(r) => Ok(success(json!(r))),
                 Err(e) => Err(db_error(e)),
@@ -33,21 +33,35 @@ fn read_transmission_types(claims: Result<UserToken, Error>, conn: db::Connectio
     }
 }
 
-#[post("/model/register", data = "<car_model>")]
-fn register_model(
-    car_model: Result<Json<CarModel>, JsonError>,
+#[get("/card/companies")]
+fn read_card_companies(claims: Result<UserToken, Error>, conn: db::Connection) -> Result<ApiResponse, ApiError> {
+    match claims {
+        Ok(_) => {
+            let result = BankCardCompany::read(&conn);
+            match result {
+                Ok(r) => Ok(success(json!(r))),
+                Err(e) => Err(db_error(e)),
+            }
+        }
+        Err(e) => Err(unauthorized_error(e)),
+    }
+}
+
+#[post("/card/register", data = "<bank_card>")]
+fn register_bank_card(
+    bank_card: Result<Json<BankCard>, JsonError>,
     claims: Result<UserToken, Error>,
     conn: db::Connection,
 ) -> Result<ApiResponse, ApiError> {
     match claims {
         Ok(_) => {
-            match car_model {
+            match bank_card {
                 Ok(c) => {
-                    let insert = CarModel {
+                    let insert = BankCard {
                         id: None,
                         ..c.into_inner()
                     };
-                    let result = CarModel::create(insert, &conn);
+                    let result = BankCard::create(insert, &conn);
 
                     match result {
                         Ok(r) => Ok(success(json!(r))),
@@ -63,5 +77,5 @@ fn register_model(
 
 // -- routes
 pub fn routes() -> Vec<rocket::Route> {
-    routes![read_brands, read_transmission_types, register_model]
+    routes![read_bank_companies, read_card_types, read_card_companies, register_bank_card]
 }

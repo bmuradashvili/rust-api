@@ -37,6 +37,7 @@ fn main() {
         .manage(db::connect())
         .mount("/user", controllers::user::routes())
         .mount("/car", controllers::car::routes())
+        .mount("/bank", controllers::bank::routes())
         .register(utils::catcher::catchers())
         .launch();
 }
