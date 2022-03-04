@@ -8,6 +8,7 @@ services:
       - /var/lib/mysql
   db:
     build: ./db
+    image: bmuradashvili/rust_api-db
     container_name: mysql
     restart: unless-stopped
     volumes_from:
@@ -24,6 +25,7 @@ services:
         ipv4_address: 10.10.0.2
   app:
     build: ./api
+    image: bmuradashvili/rust_api-app
     container_name: application
     restart: unless-stopped
     volumes:
@@ -39,6 +41,7 @@ services:
         ipv4_address: 10.10.0.3
   server:
     build: ./nginx
+    image: bmuradashvili/rust_api-server
     container_name: nginx
     restart: unless-stopped
     ports:

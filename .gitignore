@@ -11,3 +11,4 @@
 /api/.git
 /api/.gitignore
 /api/.env
+/api/src/*.backup
